@@ -67,6 +67,7 @@ class Bd {
                 continue
             }
 
+            despesa.id = i
             despesas.push(despesa)
         }
 
@@ -120,6 +121,10 @@ class Bd {
         return despesasFiltradas
 
 
+    }
+
+    remover(id) {
+        localStorage.removeItem(id)
     }
 
 
@@ -185,11 +190,11 @@ function cadastrarDespesa() {
 
 function carregaListaDespesas(despesas = Array(), filtro = false) {
 
-    
-    if(despesas.length == 0 && filtro == false) {
+
+    if (despesas.length == 0 && filtro == false) {
         despesas = bd.recuperarTodosRegistros()
     }
-    
+
 
     let listaDespesas = document.getElementById('listaDespesas')
     listaDespesas.innerHTML = ''
@@ -235,6 +240,36 @@ function carregaListaDespesas(despesas = Array(), filtro = false) {
 
         linha.insertCell(2).innerHTML = d.descricao
         linha.insertCell(3).innerHTML = d.valor
+
+        // botão para excluir abaixo 
+
+        let btn = document.createElement("button");
+        btn.className = 'btn btn-danger';  // Corrigido aqui, removido o espaço antes de "danger"
+        btn.innerHTML = '<i class="fas fa-times"></i>';  // Corrigido aqui, adicionado o sinal de igual e espaço entre class e "fas"
+        btn.id = `id_despesa_${d.id}`;
+        btn.onclick = function () {
+
+            let id = this.id.replace('id_despesas_', '')
+
+           // alert(id)
+
+            bd.remover(id)
+
+            window.location.reload()
+        }
+        linha.insertCell(4).appendChild(btn);  // Corrigido aqui, trocado append por appendChild
+
+        console.log(d)
+
+
+        //let btn = document.createElement("button")
+        //btn.className = 'btn btn - danger'
+        //btn.innerHTML = '<i class"fas fa-times"></i>'
+        //linha.insertCell(4).append(btn)
+
+
+
+
     })
 
 
@@ -253,7 +288,7 @@ function pesquisarDespesa() {
 
     let despesas = bd.pesquisar(despesa)
 
-    
+
 
     let listaDespesas = document.getElementById('listaDespesas')
     listaDespesas.innerHTML = ''
@@ -314,7 +349,7 @@ function pesquisarDespesa() {
 
     let despesa = new Despesa(ano, mes, dia, tipo, descricao, valor)
 
-    let despesas = bd.pesquisar(despesa) 
+    let despesas = bd.pesquisar(despesa)
 
     this.carregaListaDespesas(despesas, true)
 
